@@ -60,3 +60,12 @@
   // persist(Delivery);
   // persist(Order);
   ```
+- `@Transactional (readOnly = true)`  
+  성능 최적화  
+  리소스 X 읽기만 
+- `@Autowired`
+  - 필드 주입 -> 주입하기가 까다로움
+  - setter 주입 -> 테스트 시 mock으로도 주입 가능, 누가 변경 가능
+  - **생성자 주입** -> 스프링이 컴포넌트를 읽을때 생성자에 컴포넌트가 있다면 주입. 필드는 변경할 수 없게 final 지정. 
+- lombok 사용시 `@AllArgsConstructor`라는 어노테이샨이 지정된 클래스의 field를 읽어 접근 키워드와 상관없이 constructor를 생성하고, `@RequiredArgsConstructor`같은 경우 field에 final 이라는 키워드가 붙은 것만 constructor를 만들어 주입한다. 
+- `main`, `test` 디렉토리에서는 각자의 `resources`를 읽음

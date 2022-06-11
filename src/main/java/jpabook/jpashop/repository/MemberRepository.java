@@ -15,11 +15,6 @@ public class MemberRepository {
 
     private final EntityManager em;
 
-    //@Autowired
-    //public MemberRepository(EntityManager em) {
-    //    this.em = em;
-    //}
-
     public void save(Member member) {
         em.persist(member);
     }

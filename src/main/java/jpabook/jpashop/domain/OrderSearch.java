@@ -6,6 +6,6 @@ import lombok.*;
 public class OrderSearch {
 
     private String memberName;
-    private OrderStatus status;
+    private OrderStatus orderStatus;
 
 }

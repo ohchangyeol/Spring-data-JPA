@@ -58,7 +58,7 @@ class OrderServiceTest {
         int orderCount = 2;
         Long orderId = orderService.order(member.getId(), item.getId(), orderCount);
         // when 실행
-        orderService.camcelOrder(orderId);
+        orderService.cancelOrder(orderId);
 
         // then 결과
         Order getOrder = orderRepository.findOne(orderId);
@@ -98,7 +98,7 @@ class OrderServiceTest {
 
     private Member createMember() {
         Member member = new Member();
-        member.setUserName("회원1");
+        member.setName("회원1");
         member.setAddress(new Address("서울", "강가", "1234-1"));
         em.persist(member);
         return member;

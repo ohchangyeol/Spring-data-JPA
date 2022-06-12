@@ -111,3 +111,73 @@
           .sum();
   }
   ```
+  
+### 준영속 엔티티
+영속성 컨텍스트가 더는 관리하지 않는 엔티티를 말한다.  
+`itemService.saveItem(book)` 에서 수정을 시도하는 `Book` 객체다. `Book` 객체는 이미 DB
+에 한번 저장되어서 식별자가 존재한다. 이렇게 임의로 만들어낸 엔티티도 기존 식별자를 가지고 있으면 준
+영속 엔티티로 볼 수 있다.
+```java
+@PostMapping(value = "/items/{itemId}/edit")
+public String updateItem(@ModelAttribute("form") BookForm form) {
+    Book book = new Book();
+    book.setId(form.getId());
+    book.setName(form.getName());
+    book.setPrice(form.getPrice());
+    book.setStockQuantity(form.getStockQuantity());
+    book.setAuthor(form.getAuthor());
+    book.setIsbn(form.getIsbn());
+    itemService.saveItem(book);
+    return "redirect:/items";
+}
+```
+#### 준영속 엔티티를 수정하는 2가지 방법
+- 변경 감지 기능 사용
+  ```java
+  @Transactional
+  void update(Item itemParam) { //itemParam: 파리미터로 넘어온 준영속 상태의 엔티티
+    Item findItem = em.find(Item.class, itemParam.getId()); //같은 엔티티를 조회한
+    다.
+    findItem.setPrice(itemParam.getPrice()); //데이터를 수정한다.
+    findItem.setStockQuantity(itemParam.getStockQuantity());
+  } 
+  ```
+  > 영속성 컨텍스트에서 엔티티를 다시 조회한 후에 데이터를 수정하는 방법
+  트랜잭션 안에서 엔티티를 다시 조회, 변경할 값 선택 트랜잭션 커밋 시점에 변경 감지(Dirty Checking)
+  이 동작해서 데이터베이스에 UPDATE SQL 실행
+
+- 병합 사용
+  ```java
+  @Transactional
+  void update(Item itemParam) { //itemParam: 파리미터로 넘어온 준영속 상태의 엔티티
+   Item mergeItem = em.merge(item);
+  }
+  ```
+  > 조회한 영속 엔티티( mergeMember )에 member 엔티티의 값을 채워 넣는다. (member 엔티티의 모든 값
+  을 mergeMember에 밀어 넣는다. 이때 mergeMember의 “회원1”이라는 이름이 “회원명변경”으로 바
+  뀐다.)
+
+  **주의: 변경 감지 기능을 사용하면 원하는 속성만 선택해서 변경할 수 있지만, 병합을 사용하면 모든 속성이
+  변경된다. 병합시 값이 없으면 null 로 업데이트 할 위험도 있다. (병합은 모든 필드를 교체한다.)**
+
+
+- 권장 코드
+  ```java
+  public class ItemService {
+    @Transactional
+    public void updateItem(Long id, String name, int price) {
+        Item item = itemRepository.findOne(id);
+        item.setName(name);
+        item.setPrice(price);
+    }
+  }
+  ```
+  ```java
+  public class ItemController {
+    @PostMapping(value = "/items/{itemId}/edit")
+    public String updateItem(@ModelAttribute("form") BookForm form) {
+        itemService.updateItem(form.getId(), form.getName(), form.getPrice());
+        return "redirect:/items";
+    }
+  }
+  ```

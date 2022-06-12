@@ -24,7 +24,7 @@ class MemberRepositoryTest {
     public void testMember() throws Exception{
         //given
         Member member = new Member();
-        member.setUserName("memberA");
+        member.setName("memberA");
 
         //when
         Long saveId = memberRepository.save(member);
@@ -32,7 +32,7 @@ class MemberRepositoryTest {
 
         //then
         Assertions.assertThat(findMember.getId()).isEqualTo(member.getId());
-        Assertions.assertThat(findMember.getUserName()).isEqualTo(member.getUserName());
+        Assertions.assertThat(findMember.getName()).isEqualTo(member.getName());
         Assertions.assertThat(findMember).isEqualTo(member);
         // 같은 영속성 컨텍스트 안에 있기 때문에 같은 ID를 가지고있기 때문에 같은 객체라고 인식한다.
     }

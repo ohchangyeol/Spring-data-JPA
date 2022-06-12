@@ -24,9 +24,20 @@ public class ItemService {
     }
 
     /**
+     * Item 업데이트
+     * 쓰기권한
+     */
+    @Transactional
+    public void updateItem(Long id, String name, int price) {
+        Item item = itemRepository.findOne(id);
+        item.setName(name);
+        item.setPrice(price);
+    }
+
+    /**
      * Item List 조회
      */
-    public List<Item> fimdItems() {
+    public List<Item> findItems() {
         return itemRepository.findAll();
     }
 
